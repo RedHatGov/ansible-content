@@ -1,5 +1,30 @@
 ---
-- hosts: localhost
-  remote_user: root
-  roles:
-    - RedHatGov.content
+- hosts: content
+  vars:
+    domain: "example.com"
+    dns_server_public: 1.1.1.1
+    content_hostname: content #Short hostname
+    content_ssh_user: root
+    content_ssh_pwd: p@ssw0rd
+    content_public_ip: "192.168.122.8"
+    content_base_img: rhel-guest-image-7.qcow2
+    content_vcpus: 1
+    content_ram: 1024
+    content_os_disk_name: "{{ content_hostname }}"
+    content_os_disk_size: 110G
+    content_nics:
+      - name: eth0
+        bootproto: static
+        onboot: yes
+        ip: "{{ content_public_ip }}"
+        prefix: "24"
+        gateway: "192.168.122.1"
+        dns_server: "{{ dns_server_public }}"
+        config: "--type network --source default --model virtio"
+    #NOTE: Create/Get username/token from https://access.redhat.com/terms-based-registry/
+    content_rh_registry_username: "1234567|rhnserviceaccount"
+    content_rh_registry_token: "..."
+  tasks:
+    - name: Install content server
+      include_role:
+        name: RedHatGov.content

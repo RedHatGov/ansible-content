@@ -50,7 +50,6 @@ Example Playbook
 ```yaml
 ---
 - hosts: content
-  tags: install
   vars:
     domain: "example.com"
     dns_server_public: 1.1.1.1
@@ -62,7 +61,7 @@ Example Playbook
     content_vcpus: 1
     content_ram: 1024
     content_os_disk_name: "{{ content_hostname }}"
-    content_os_disk_size: 300G
+    content_os_disk_size: 110G
     content_nics:
       - name: eth0
         bootproto: static
@@ -78,8 +77,7 @@ Example Playbook
   tasks:
     - name: Install content server
       include_role:
-        name: content
-      tags: install
+        name: RedHatGov.content
 ```
 
 License
