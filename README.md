@@ -1,4 +1,4 @@
-idm
+content
 =========
 
 This role installs and configures RHEL Local Content Server (Repos, Registry, NFS).
