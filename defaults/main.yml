@@ -1,0 +1,178 @@
+---
+# defaults file for playbooks/roles/content
+versions:
+  rhosp: 13
+  ceph: 3
+  satellite: 6.4
+  ocp: 3.11
+  cfme: 5.9
+  ansible: 2.7
+
+disconnected: false
+domain: hattrick.lab
+dns_server_public: 1.1.1.1
+
+content_hostname: content #Short hostname
+content_ssh_user: root
+content_ssh_pwd: p@ssw0rd
+content_public_ip: []
+content_base_img: rhel-guest-image-7.qcow2
+content_vcpus: 1
+content_ram: 1024
+content_os_disk_name: "{{ content_hostname }}"
+content_os_disk_size: 110G
+content_nics: []
+content_ht_git_repo: "https://github.com/redhat-kejones/ht.git"
+content_sync_repos: true
+content_repos:
+  - rhel-{{ ansible_distribution_major_version }}-server-rpms
+  - rhel-{{ ansible_distribution_major_version }}-server-extras-rpms
+  - rhel-{{ ansible_distribution_major_version }}-server-optional-rpms
+  - rhel-{{ ansible_distribution_major_version }}-server-rh-common-rpms
+  - rhel-server-rhscl-{{ ansible_distribution_major_version }}-rpms
+  - rhel-{{ ansible_distribution_major_version }}-server-ansible-{{ versions.ansible }}-rpms
+  - rhel-ha-for-rhel-{{ ansible_distribution_major_version }}-server-rpms
+  - rhel-{{ ansible_distribution_major_version }}-server-openstack-10-rpms
+  - rhel-{{ ansible_distribution_major_version }}-server-openstack-10-devtools-rpms
+  - rhel-{{ ansible_distribution_major_version }}-server-openstack-10-optools-rpms
+  - rhel-{{ ansible_distribution_major_version }}-server-openstack-{{ versions.rhosp }}-rpms
+  - rhel-{{ ansible_distribution_major_version }}-server-openstack-{{ versions.rhosp }}-devtools-rpms
+  - rhel-{{ ansible_distribution_major_version }}-server-openstack-{{ versions.rhosp }}-optools-rpms
+  - rhel-{{ ansible_distribution_major_version }}-server-rhceph-2-osd-rpms
+  - rhel-{{ ansible_distribution_major_version }}-server-rhceph-2-mon-rpms
+  - rhel-{{ ansible_distribution_major_version }}-server-rhceph-2-tools-rpms
+  - rhel-{{ ansible_distribution_major_version }}-server-rhceph-{{ versions.ceph }}-osd-rpms
+  - rhel-{{ ansible_distribution_major_version }}-server-rhceph-{{ versions.ceph }}-mon-rpms
+  - rhel-{{ ansible_distribution_major_version }}-server-rhceph-{{ versions.ceph }}-tools-rpms
+  - rhel-{{ ansible_distribution_major_version }}-server-satellite-tools-{{ versions.satellite }}-rpms
+  - rhel-{{ ansible_distribution_major_version }}-server-satellite-{{ versions.satellite }}-rpms
+  - rhel-{{ ansible_distribution_major_version }}-server-satellite-tools-{{ versions.satellite }}-rpms
+  - rhel-{{ ansible_distribution_major_version }}-fast-datapath-rpms
+  - rhel-{{ ansible_distribution_major_version }}-server-ose-{{ versions.ocp }}-rpms
+  - rh-gluster-3-client-for-rhel-{{ ansible_distribution_major_version }}-server-rpms
+  - rh-gluster-3-for-rhel-{{ ansible_distribution_major_version }}-server-rpms
+  - cf-me-{{ versions.cfme }}-for-rhel-{{ ansible_distribution_major_version }}-rpms
+content_packages:
+  - httpd
+  - createrepo
+  - git
+  - docker-distribution
+  - python-tripleoclient
+  - docker
+content_sync_satellite: false
+content_configure_nfs: true
+content_nfs_export_dirs:
+  - /var/www/html/repos
+  - /var/www/html/deploy
+content_sync_registry: true
+content_ocp_tag: v3.11.43
+content_rh_registry_username: []
+content_rh_registry_token: []
+content_ocp_images:
+  - registry.redhat.io/openshift3/apb-base:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/apb-tools:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/automation-broker-apb:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/csi-attacher:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/csi-driver-registrar:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/csi-livenessprobe:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/csi-provisioner:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/grafana:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/image-inspector:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/mariadb-apb:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/mediawiki:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/mediawiki-apb:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/mysql-apb:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-ansible:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-ansible-service-broker:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-cli:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-cluster-autoscaler:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-cluster-capacity:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-cluster-monitoring-operator:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-console:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-configmap-reloader:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-control-plane:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-deployer:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-descheduler:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-docker-builder:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-docker-registry:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-efs-provisioner:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-egress-dns-proxy:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-egress-http-proxy:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-egress-router:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-haproxy-router:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-hyperkube:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-hypershift:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-keepalived-ipfailover:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-kube-rbac-proxy:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-kube-state-metrics:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-metrics-server:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-node:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-node-problem-detector:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-operator-lifecycle-manager:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-pod:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-prometheus-config-reloader:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-prometheus-operator:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-recycler:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-service-catalog:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-template-service-broker:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-web-console:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/postgresql-apb:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/registry-console:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/snapshot-controller:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/snapshot-provisioner:{{ content_ocp_tag }}
+  - registry.redhat.io/rhel7/etcd:3.2.22
+  - registry.redhat.io/openshift3/metrics-cassandra:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/metrics-hawkular-metrics:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/metrics-hawkular-openshift-agent:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/metrics-heapster:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/metrics-schema-installer:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/oauth-proxy:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-logging-curator5:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-logging-elasticsearch5:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-logging-eventrouter:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-logging-fluentd:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/ose-logging-kibana5:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/prometheus:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/prometheus-alert-buffer:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/prometheus-alertmanager:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/prometheus-node-exporter:{{ content_ocp_tag }}
+  - registry.redhat.io/cloudforms46/cfme-openshift-postgresql
+  - registry.redhat.io/cloudforms46/cfme-openshift-memcached
+  - registry.redhat.io/cloudforms46/cfme-openshift-app-ui
+  - registry.redhat.io/cloudforms46/cfme-openshift-app
+  - registry.redhat.io/cloudforms46/cfme-openshift-embedded-ansible
+  - registry.redhat.io/cloudforms46/cfme-openshift-httpd
+  - registry.redhat.io/cloudforms46/cfme-httpd-configmap-generator
+  - registry.redhat.io/rhgs3/rhgs-server-rhel7
+  - registry.redhat.io/rhgs3/rhgs-volmanager-rhel7
+  - registry.redhat.io/rhgs3/rhgs-gluster-block-prov-rhel7
+  - registry.redhat.io/rhgs3/rhgs-s3-server-rhel7
+  - registry.redhat.io/jboss-amq-6/amq63-openshift
+  - registry.redhat.io/jboss-datagrid-7/datagrid71-openshift
+  - registry.redhat.io/jboss-datagrid-7/datagrid71-client-openshift
+  - registry.redhat.io/jboss-datavirt-6/datavirt63-openshift
+  - registry.redhat.io/jboss-datavirt-6/datavirt63-driver-openshift
+  - registry.redhat.io/jboss-decisionserver-6/decisionserver64-openshift
+  - registry.redhat.io/jboss-processserver-6/processserver64-openshift
+  - registry.redhat.io/jboss-eap-6/eap64-openshift
+  - registry.redhat.io/jboss-eap-7/eap70-openshift
+  - registry.redhat.io/jboss-webserver-3/webserver31-tomcat7-openshift
+  - registry.redhat.io/jboss-webserver-3/webserver31-tomcat8-openshift
+  - registry.redhat.io/openshift3/jenkins-2-rhel7:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/jenkins-agent-maven-35-rhel7:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/jenkins-agent-nodejs-8-rhel7:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/jenkins-slave-base-rhel7:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/jenkins-slave-maven-rhel7:{{ content_ocp_tag }}
+  - registry.redhat.io/openshift3/jenkins-slave-nodejs-rhel7:{{ content_ocp_tag }}
+  - registry.redhat.io/rhscl/mongodb-32-rhel7
+  - registry.redhat.io/rhscl/mysql-57-rhel7
+  - registry.redhat.io/rhscl/perl-524-rhel7
+  - registry.redhat.io/rhscl/php-56-rhel7
+  - registry.redhat.io/rhscl/postgresql-95-rhel7
+  - registry.redhat.io/rhscl/python-35-rhel7
+  - registry.redhat.io/redhat-sso-7/sso70-openshift
+  - registry.redhat.io/rhscl/ruby-24-rhel7
+  - registry.redhat.io/redhat-openjdk-18/openjdk18-openshift
+  - registry.redhat.io/redhat-sso-7/sso71-openshift
+  - registry.redhat.io/rhscl/nodejs-6-rhel7
+  - registry.redhat.io/rhscl/mariadb-101-rhel7

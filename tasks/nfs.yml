@@ -1,0 +1,54 @@
+---
+# tasks file for roles/rhel_nfs
+
+- name: creates directory to export for cinder
+  file:
+    path: "{{ item }}"
+    state: directory
+  loop: "{{ content_nfs_export_dirs }}"
+  tags: configure, nfs
+
+- name: add export lines to /etc/exports
+  lineinfile:
+    dest: /etc/exports
+    line: "{{ item }}   	 *(rw,sync,no_root_squash,no_all_squash,insecure)"
+    insertafter: "BOF"
+    state: present
+  loop: "{{ content_nfs_export_dirs }}"
+  tags: configure, nfs
+
+- name: starting the rpcbind service
+  service:
+    name: rpcbind
+    state: started
+    enabled: yes
+  tags: configure, nfs
+
+- name: starting the nfs service
+  service:
+    name: nfs-server
+    state: started
+    enabled: yes
+  tags: configure, nfs
+
+#TODO: add firewalld? if so make sure its installed and enabled
+#- name: Add nfs service to firewalld config
+#  firewalld:
+#    service: nfs
+#    permanent: true
+#    state: enabled
+
+#- name: Add mountd service to firewalld config
+#  firewalld:
+#    service: mountd
+#    permanent: true
+#    state: enabled
+
+#- name: Add rpc-bind service to firewalld config
+#  firewalld:
+#    service: rpc-bind
+#    permanent: true
+#    state: enabled
+
+#- name: restart firewalld
+#  service: name=firewalld state=restarted

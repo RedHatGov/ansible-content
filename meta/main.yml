@@ -1,0 +1,21 @@
+galaxy_info:
+  role_name: content
+  author: Kevin Jones
+  description: >
+    Deploy RHEL Local Content Server (Repos, Registry, NFS)
+  company: Red Hat
+  license: GPLv3
+  min_ansible_version: 2.6
+  platforms:
+    - name: EL
+      versions:
+        - 7
+  galaxy_tags:
+    - cloud
+    - content
+    - rhel
+
+dependencies:
+  - role: RedHatGov.rhsm
+    vars:
+      rhsm_repos: "{{ content_repos }}"

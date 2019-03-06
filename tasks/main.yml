@@ -1,0 +1,72 @@
+---
+# tasks file for playbooks/roles/content
+
+- name: set hostname
+  hostname:
+    name: "{{ content_hostname }}.{{ domain }}"
+  tags: install
+
+- name: add line to hosts file for self
+  lineinfile:
+    dest: /etc/hosts
+    state: present
+    regexp: "^{{ inventory_hostname }}"
+    line: "{{ inventory_hostname }} {{ content_hostname }}.{{ domain }} {{ content_hostname }}"
+  tags: install
+
+- name: update packages
+  yum:
+    name: '*'
+    state: latest
+  register: yum_result
+  async: 1000
+  poll: 30
+  tags: install
+
+- name: check Kernel is the Latest
+  shell: if [ $(uname -r) == $(rpm -q kernel | tail -n 1 | sed -e 's/kernel-//g') ] ; then echo no ; else echo reboot; fi
+  ignore_errors: true
+  register: reboot_hint
+  tags: install
+
+- name: install the required packages
+  yum:
+    name: "{{ content_packages }}"
+    state: present
+  tags: install
+
+- name: restart machine to get updated kernel
+  shell: sleep 2 && shutdown -r now "ansible restart triggered for registry install"
+  async: 1
+  poll: 0
+  ignore_errors: true
+  when: yum_result.changed or reboot_hint.stdout.find("reboot") != -1
+  tags: install
+
+- name: waiting for server to come back
+  wait_for:
+    host: "{{ content_public_ip }}"
+    state: started
+    delay: 10
+    connect_timeout: 5
+    timeout: 300
+    port: 22
+  delegate_to: 127.0.0.1
+  become: false
+  ignore_errors: true
+  tags: install
+
+- name: Sync and configure server for local repos
+  include_tasks: repos.yml
+  when: content_sync_repos
+  tags: configure, repos
+
+- name: Sync and configure server for local registry
+  include_tasks: registry.yml
+  when: content_sync_registry
+  tags: configure, registry
+
+- name: Configure server for NFS
+  include_tasks: nfs.yml
+  when: content_configure_nfs
+  tags: configure, nfs

@@ -1,0 +1,80 @@
+---
+# tasks file for roles/rhel_registry
+- name: add ip to docker-distribution config
+  lineinfile:
+    dest: /etc/docker-distribution/registry/config.yml
+    state: present
+    regexp: "addr:"
+    line: "    addr: {{ content_public_ip }}:8787"
+    insertafter: "^http:"
+  tags: configure, registry
+
+- name: starting the docker-distribution service
+  service:
+    name: docker-distribution
+    state: started
+    enabled: yes
+  tags: configure, registry
+
+- name: add insecure registry to docker config
+  lineinfile:
+    dest: /etc/sysconfig/docker
+    state: present
+    line: 'INSECURE_REGISTRY="--insecure-registry {{ content_public_ip }}:8787"'
+    insertafter: "EOF"
+  tags: configure, registry
+
+- name: starting the docker service
+  service:
+    name: docker
+    state: started
+    enabled: yes
+  tags: configure, registry
+
+#Pull RHOSP 13 Container Images
+- name: copy pull-rhosp-images.sh script
+  template:
+    src: templates/pull-rhosp13-images.sh.j2
+    dest: /root/pull-rhosp13-images.sh
+    owner: root
+    group: root
+    mode: 0775
+  tags: configure, registry
+
+- name: Execute the pull-rhosp13-images.sh script
+  shell: /root/pull-rhosp13-images.sh
+  args:
+    chdir: /root
+  tags: configure, registry
+
+- name: docker login for registry.redhat.io
+  shell: docker login -u='{{ content_rh_registry_username }}' -p={{ content_rh_registry_token }} registry.redhat.io
+  tags: configure, registry
+
+- name: Pull ocp images
+  shell: docker pull {{ item }}
+  with_items: "{{ content_ocp_images }}"
+  ignore_errors: true
+  tags: configure, registry
+
+- name: Tag ocp images
+  shell: docker tag {{ item }} {{ content_public_ip }}:8787/{{ item }}
+  with_items: "{{ content_ocp_images }}"
+  ignore_errors: true
+  tags: configure, registry
+
+- name: Push ocp images
+  shell: docker push {{ content_public_ip }}:8787/{{ item }}
+  with_items: "{{ content_ocp_images }}"
+  ignore_errors: true
+  tags: configure, registry
+
+#TODO: firewalld? if so need to install and enable
+#- name: Add docker-distribution service to firewalld config
+#  firewalld:
+#    port: "8787/TCP"
+#    permanent: true
+#    state: enabled
+
+#- name: restart firewalld
+#  service: name=firewalld state=restarted

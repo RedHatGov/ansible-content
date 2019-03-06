@@ -1,0 +1,83 @@
+---
+# tasks file for rhel_repo
+#TODO: Need to work on disconnected
+- name: Creates directory for repos
+  file:
+    path: /repos/
+    state: directory
+    owner: root
+    group: root
+    mode: 0775
+  when: disconnected
+  tags: disconnected_repos, configure, repos
+
+- name: copy repos from KVM host
+  synchronize:
+    src: /repos/repos
+    dest: /repos
+  when: disconnected
+  tags: disconnected_repos, configure, repos
+
+- name: Creates directory for repos
+  file:
+    path: /var/www/html/repos/
+    state: directory
+    owner: apache
+    group: apache
+    mode: 0775
+  tags: sync_repos, configure, repos
+
+- name: move disconnected repos to web root
+  shell: mv /repos/repos/* /var/www/html/repos/
+  when: disconnected
+  tags: disconnected_repos, configure, repos
+
+- name: change ownership of repos in web root
+  file:
+    path: /var/www/html/repos
+    owner: apache
+    group: apache
+    recurse: yes
+  tags: sync_repos, configure, repos
+
+- name: reposync all repos
+  command: "reposync --gpgcheck -l -n --repoid={{ item }} --download_path=/var/www/html/repos"
+  with_items: "{{ content_repos }}"
+  when: not disconnected
+  tags: sync_repos, configure, repos
+
+- name: createrepo on all repos
+  command: "createrepo -v /var/www/html/repos/{{ item }}"
+  loop: "{{ content_repos }}"
+  when: not disconnected
+  tags: create_repos, configure, repos
+
+- name: Creates directory
+  file:
+    path: /var/www/html/deploy
+    state: directory
+    owner: apache
+    group: apache
+    mode: 0775
+  tags: clone_deploy, configure, repos
+
+- name: Clone the code repository to the docroot.
+  git:
+    repo: "{{ content_ht_git_repo }}"
+    dest: /var/www/html/deploy
+    accept_hostkey: yes
+    key_file: /var/www/.ssh/deploy_key
+  become_user: apache
+  when: not disconnected
+  tags: clone_deploy, configure, repos
+
+- name: restore selinux context on web root
+  shell: restorecon -Rv /var/www/html
+  tags: configure, repos
+
+- name: starting the httpd service
+  service:
+    name: httpd
+    state: started
+    enabled: yes
+  tags: configure, repos
