@@ -24,9 +24,9 @@ Role Variables
 | `content_public_ip` | :heavy_check_mark:      |  | The reachable public IP |
 | `content_base_img` | :heavy_check_mark:      |  | Name of the base image located in /var/lib/libvirt/images on the KVM hypervisor |
 | `content_vcpus` | :x:      | ```1``` | Number of vCPUS required |
-| `content_ram` | :x:      | ```4096``` | Amount of ram required in megabytes |
+| `content_ram` | :x:      | ```1024``` | Amount of ram required in megabytes |
 | `content_os_disk_name` | :x:      | ```{{ idm_hostname }}``` | Name of the OS disk in /var/lib/libvirt/images |
-| `content_os_disk_size` | :x:      | ```45G``` | Size of OS disk |
+| `content_os_disk_size` | :x:      | ```110G``` | Size of OS disk |
 | `content_nics` | :heavy_check_mark:      | ```see example playbook``` | Dictionary of NICs to create |
 | `content_ht_git_repo` | :x:      | ```https://github.com/redhat-kejones/ht.git``` | Location of Project Hat Trick repository |
 | `content_sync_repos` | :x:      | true | Boolean to sync Red Hat repos |
