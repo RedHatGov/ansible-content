@@ -15,7 +15,4 @@ galaxy_info:
     - content
     - rhel
 
-dependencies:
-  - role: RedHatGov.rhsm
-    vars:
-      rhsm_repos: "{{ content_repos }}"
+dependencies: []
