@@ -48,17 +48,17 @@
   tags: configure, registry
 
 - name: docker login for registry.redhat.io
-  shell: docker login -u='{{ content_rh_registry_username }}' -p={{ content_rh_registry_token }} registry.redhat.io
+  shell: docker login -u='{{ content_rh_registry_username }}' -p={{ content_rh_registry_token }} {{ content_upstream_registry }}
   tags: configure, registry
 
 - name: Pull ocp images
-  shell: docker pull {{ item }}
+  shell: docker pull {{ content_upstream_registry }}/{{ item }}
   with_items: "{{ content_ocp_images }}"
   ignore_errors: true
   tags: configure, registry
 
 - name: Tag ocp images
-  shell: docker tag {{ item }} {{ content_public_ip }}:8787/{{ item }}
+  shell: docker tag {{ content_upstream_registry }}/{{ item }} {{ content_public_ip }}:8787/{{ item }}
   with_items: "{{ content_ocp_images }}"
   ignore_errors: true
   tags: configure, registry
