@@ -69,6 +69,11 @@
   ignore_errors: true
   tags: configure, registry
 
+- name: Remove local docker images
+  shell: 'docker rmi -f $(docker images -aq)'
+  ignore_errors: true
+  tags: configure, registry
+
 #TODO: firewalld? if so need to install and enable
 #- name: Add docker-distribution service to firewalld config
 #  firewalld:
