@@ -134,6 +134,14 @@ content_ocp_images:
   - openshift3/prometheus:{{ content_ocp_tag }}
   - openshift3/prometheus-alertmanager:{{ content_ocp_tag }}
   - openshift3/prometheus-node-exporter:{{ content_ocp_tag }}
+  - openshift3/jenkins-2-rhel7:{{ content_ocp_tag }}
+  - openshift3/jenkins-agent-maven-35-rhel7:{{ content_ocp_tag }}
+  - openshift3/jenkins-agent-nodejs-8-rhel7:{{ content_ocp_tag }}
+  - openshift3/jenkins-slave-base-rhel7:{{ content_ocp_tag }}
+  - openshift3/jenkins-slave-maven-rhel7:{{ content_ocp_tag }}
+  - openshift3/jenkins-slave-nodejs-rhel7:{{ content_ocp_tag }}
+
+content_ocp_extra_images:
   - cloudforms46/cfme-openshift-postgresql
   - cloudforms46/cfme-openshift-memcached
   - cloudforms46/cfme-openshift-app-ui
@@ -156,12 +164,6 @@ content_ocp_images:
   - jboss-eap-7/eap70-openshift
   - jboss-webserver-3/webserver31-tomcat7-openshift
   - jboss-webserver-3/webserver31-tomcat8-openshift
-  - openshift3/jenkins-2-rhel7:{{ content_ocp_tag }}
-  - openshift3/jenkins-agent-maven-35-rhel7:{{ content_ocp_tag }}
-  - openshift3/jenkins-agent-nodejs-8-rhel7:{{ content_ocp_tag }}
-  - openshift3/jenkins-slave-base-rhel7:{{ content_ocp_tag }}
-  - openshift3/jenkins-slave-maven-rhel7:{{ content_ocp_tag }}
-  - openshift3/jenkins-slave-nodejs-rhel7:{{ content_ocp_tag }}
   - rhscl/mongodb-32-rhel7
   - rhscl/mysql-57-rhel7
   - rhscl/perl-524-rhel7

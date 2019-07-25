@@ -57,15 +57,39 @@
   ignore_errors: true
   tags: configure, registry
 
-- name: Tag ocp images
+- name: Tag ocp images with tag
   shell: docker tag {{ content_upstream_registry }}/{{ item }} {{ content_public_ip }}:8787/{{ item }}
   with_items: "{{ content_ocp_images }}"
+  ignore_errors: true
+  tags: configure, registry
+
+- name: Tag ocp images with latest
+  shell: docker tag {{ content_upstream_registry }}/{{ item }} {{ content_public_ip }}:8787/{{ item.split(":")[0] }}:latest
+  with_items: "{{ content_ocp_images }}"
+  ignore_errors: true
+  tags: configure, registry
+
+- name: Pull ocp extra images
+  shell: docker pull {{ content_upstream_registry }}/{{ item }}
+  with_items: "{{ content_ocp_extra_images }}"
+  ignore_errors: true
+  tags: configure, registry
+
+- name: Tag ocp extra images
+  shell: docker tag {{ content_upstream_registry }}/{{ item }} {{ content_public_ip }}:8787/{{ item }}
+  with_items: "{{ content_ocp_extra_images }}"
   ignore_errors: true
   tags: configure, registry
 
 - name: Push ocp images
   shell: docker push {{ content_public_ip }}:8787/{{ item }}
   with_items: "{{ content_ocp_images }}"
+  ignore_errors: true
+  tags: configure, registry
+
+- name: Push ocp extra images
+  shell: docker push {{ content_public_ip }}:8787/{{ item }}
+  with_items: "{{ content_ocp_extra_images }}"
   ignore_errors: true
   tags: configure, registry
 
