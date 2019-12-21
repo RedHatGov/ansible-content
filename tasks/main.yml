@@ -10,8 +10,8 @@
   lineinfile:
     dest: /etc/hosts
     state: present
-    regexp: "^{{ inventory_hostname }}"
-    line: "{{ inventory_hostname }} {{ content_hostname }}.{{ domain }} {{ content_hostname }}"
+    regexp: "^{{ content_public_ip }}"
+    line: "{{ content_public_ip }} {{ content_hostname }}.{{ domain }} {{ content_hostname }}"
   tags: install
 
 - name: update packages
